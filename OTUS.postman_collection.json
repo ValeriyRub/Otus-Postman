@@ -1,0 +1,681 @@
+{
+	"info": {
+		"_postman_id": "fd1aa09f-3f82-44ef-91ba-b6b8fb64bdd8",
+		"name": "OTUS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "24924426"
+	},
+	"item": [
+		{
+			"name": "Wrong Auth",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 403\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"username\": \"TestRubtsov1\",\n  \"password\": \"TestRubtsov1232424\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://api.wishlist.otus.kartushin.su/api/auth/login"
+			},
+			"response": []
+		},
+		{
+			"name": "Auth",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Your test name\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property(\"token\");",
+							"});",
+							"",
+							"try {",
+							"   var resp_data = JSON.parse(responseBody),",
+							"       token = resp_data.token;",
+							"       postman.setEnvironmentVariable(\"token\", token);",
+							"} catch(e) {",
+							"   console.log(e);",
+							"   console.log(resp_data);",
+							"   ",
+							"}",
+							"",
+							"pm.test(\"Content-Type is present\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"username\": \"TestRubtsov1\",\n  \"password\": \"TestRubtsov1\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://api.wishlist.otus.kartushin.su/api/auth/login"
+			},
+			"response": []
+		},
+		{
+			"name": "Users Request",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"const expectedData = {",
+							"    \"id\": \"207fe57c-d43b-47c1-83e5-fe82ee2c07a9\",",
+							"    \"username\": \"TestRubtsov1\",",
+							"    \"email\": \"Test1@test.test\"",
+							"};",
+							"",
+							"try {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.test(\"Response contains expected user data\", function() {",
+							"        pm.expect(responseData).to.deep.include(expectedData);",
+							"    });",
+							"    ",
+							"} catch (e) {",
+							"    pm.test(\"Response is valid JSON\", function() {",
+							"        pm.expect.fail(\"Response is not valid JSON: \" + e.message);",
+							"    });",
+							"}",
+							"",
+							"pm.test(\"Content-Type is present\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{token}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://api.wishlist.otus.kartushin.su/api/users"
+			},
+			"response": []
+		},
+		{
+			"name": "Wrong Add Wish",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 403\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{token}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"description\": \"Test\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://api.wishlist.otus.kartushin.su/api/wishlists"
+			},
+			"response": []
+		},
+		{
+			"name": "Add Wish",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"var responseBody = pm.response.json();",
+							"var id = responseBody.id;",
+							"pm.environment.set(\"Wish\", id);",
+							"",
+							"pm.test(\"Test Wish\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property(\"id\");",
+							"    pm.expect(jsonData).to.have.property(\"title\", \"Test\");",
+							"    pm.expect(jsonData).to.have.property(\"description\", \"Test\");",
+							"    pm.expect(jsonData).to.have.property(\"owner\");",
+							"    pm.expect(jsonData).to.have.property(\"gifts\");",
+							"    pm.expect(jsonData.gifts).to.be.an(\"array\").that.is.empty;",
+							"});",
+							"",
+							"pm.test(\"Content-Type is present\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{token}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"title\": \"Test\",\n  \"description\": \"Test\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://api.wishlist.otus.kartushin.su/api/wishlists"
+			},
+			"response": []
+		},
+		{
+			"name": "Wishlist",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Test Wish\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    ",
+							"    pm.expect(jsonData).to.be.an(\"array\").that.is.not.empty;",
+							"",
+							"    jsonData.forEach(wish => {",
+							"        pm.expect(wish).to.have.property(\"id\");",
+							"        pm.expect(wish).to.have.property(\"title\");",
+							"        pm.expect(wish).to.have.property(\"description\");",
+							"        pm.expect(wish).to.have.property(\"owner\");",
+							"        pm.expect(wish).to.have.property(\"gifts\");",
+							"        pm.expect(wish.gifts).to.be.an(\"array\");",
+							"    });",
+							"});",
+							"",
+							"pm.test(\"Content-Type is present\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{token}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://api.wishlist.otus.kartushin.su/api/wishlists"
+			},
+			"response": []
+		},
+		{
+			"name": "Wrong change Wish",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 403\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{token}}"
+					}
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"title\": \"Test1\",\n  \"description\": \"Test1\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://api.wishlist.otus.kartushin.su/api/wishlists/{{Wish}}"
+			},
+			"response": []
+		},
+		{
+			"name": "Change Wish",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Test Wish\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property(\"id\");",
+							"    pm.expect(jsonData).to.have.property(\"title\", \"Test1\");",
+							"    pm.expect(jsonData).to.have.property(\"description\", \"Test1\");",
+							"    pm.expect(jsonData).to.have.property(\"owner\");",
+							"    pm.expect(jsonData).to.have.property(\"gifts\");",
+							"    pm.expect(jsonData.gifts).to.be.an(\"array\").that.is.empty;",
+							"});",
+							"",
+							"pm.test(\"Content-Type is present\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{token}}"
+					}
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"title\": \"Test1\",\n  \"description\": \"Test1\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://api.wishlist.otus.kartushin.su/api/wishlists/{{Wish}}"
+			},
+			"response": []
+		},
+		{
+			"name": "Wrong Gift Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 403\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{token}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"description\": \"string\",\n  \"imageUrl\": \"string\",\n  \"price\": 1,\n  \"storeUrl\": \"k.d19yshd5ncjec0.8ing.4uo8.y8jpnb.1860j6vjlcnf-l319jst5d-uk8d9-rpowejhgypc65jo-02kin8fyqedl1je86.rgqrjoKWqFIpE63ieRU vQ-\",\n  \"reserved\": true\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://api.wishlist.otus.kartushin.su/api/gifts/wishlist/{{Wish}}"
+			},
+			"response": []
+		},
+		{
+			"name": "Add Gift",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"var responseBody = pm.response.json();",
+							"var id = responseBody.id;",
+							"pm.environment.set(\"Gift\", id);",
+							"",
+							"pm.test(\"Content-Type is present\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{token}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa1\",\n  \"name\": \"string\",\n  \"description\": \"string\",\n  \"imageUrl\": \"string\",\n  \"price\": 1,\n  \"storeUrl\": \"k.d19yshd5ncjec0.8ing.4uo8.y8jpnb.1860j6vjlcnf-l319jst5d-uk8d9-rpowejhgypc65jo-02kin8fyqedl1je86.rgqrjoKWqFIpE63ieRU vQ-\",\n  \"reserved\": true\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://api.wishlist.otus.kartushin.su/api/gifts/wishlist/{{Wish}}"
+			},
+			"response": []
+		},
+		{
+			"name": "Gifts",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Content-Type is present\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{token}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api.wishlist.otus.kartushin.su/api/gifts/wishlist/{{Wish}}",
+					"protocol": "https",
+					"host": [
+						"api",
+						"wishlist",
+						"otus",
+						"kartushin",
+						"su"
+					],
+					"path": [
+						"api",
+						"gifts",
+						"wishlist",
+						"{{Wish}}"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": "",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Wrong Gift Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 401\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{token}}"
+					}
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://api.wishlist.otus.kartushin.su/api/gifts/{{Wish}}"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Gift",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{token}}"
+					}
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://api.wishlist.otus.kartushin.su/api/gifts/{{Gift}}"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Wish",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{token}}"
+					}
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://api.wishlist.otus.kartushin.su/api/wishlists/{{Wish}}"
+			},
+			"response": []
+		}
+	]
+}
